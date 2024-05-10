@@ -8,18 +8,36 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/numText"
-        android:textAlignment="center"
+<!--    <TextView-->
+<!--        android:id="@+id/numText"-->
+<!--        android:textAlignment="center"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="number"/>-->
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/acceptAllRadio"
+            android:text="Accept All"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <RadioButton
+            android:id="@+id/onlyMyContactsRadio"
+            android:text="Only my Contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/historyBtn"
+        android:layout_margin="20sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="number"/>
-
-<!--    <Button-->
-<!--        android:id="@+id/acceptCallButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Accept" />-->
+        android:text="Show History" />
 
 <!--    <Button-->
 <!--        android:id="@+id/rejectCallButton"-->

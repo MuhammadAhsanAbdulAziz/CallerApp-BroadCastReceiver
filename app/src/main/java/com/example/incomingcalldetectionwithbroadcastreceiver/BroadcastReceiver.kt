@@ -11,7 +11,6 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 
 open class BroadcastReceiver : BroadcastReceiver() {
 
@@ -59,8 +58,6 @@ open class BroadcastReceiver : BroadcastReceiver() {
 
 
     fun acceptCall(telecomManager: TelecomManager) {
-        // Request to accept incoming call
-        // This requires the android.permission.ANSWER_PHONE_CALLS permission
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.READ_PHONE_STATE
@@ -68,21 +65,8 @@ open class BroadcastReceiver : BroadcastReceiver() {
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 telecomManager.acceptRingingCall()
+
             }
         }
     }
-//
-//    fun rejectCall(telecomManager: TelecomManager) {
-//        // Request to reject incoming call
-//        // This requires the android.permission.ANSWER_PHONE_CALLS permission
-//        if (ContextCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.READ_PHONE_STATE
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//                telecomManager.endCall()
-//            }
-//        }
-//    }
 }
