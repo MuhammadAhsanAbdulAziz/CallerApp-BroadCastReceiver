@@ -1,7 +1,9 @@
 package com.example.incomingcalldetectionwithbroadcastreceiver
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,6 +12,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -24,29 +27,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputEditText
+import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
-
-    //    private var phoneNumber: String = ""
-//    private lateinit var numText: TextView
     private lateinit var radioGroup: RadioGroup
     private lateinit var utilManager: UtilManager
-    private val finishReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == "com.example.FINISH_ACTIVITY") {
-                finish()
-            }
-        }
-    }
-//    private val permissions = arrayOf(
-//        android.Manifest.permission.READ_CALL_LOG,
-//        android.Manifest.permission.READ_CONTACTS,
-//        android.Manifest.permission.READ_PHONE_STATE,
-//        android.Manifest.permission.ANSWER_PHONE_CALLS,
-//        android.Manifest.permission.READ_SMS,
-//        android.Manifest.permission.SEND_SMS
-//    )
+    private lateinit var countDownTimer: CountDownTimer
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,15 +94,15 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             R.id.day3radio -> {
-                                utilManager.saveData("3hr", "duration")
+                                utilManager.saveData("3day", "duration")
                             }
 
                             R.id.day7radio -> {
-                                utilManager.saveData("7hr", "duration")
+                                utilManager.saveData("7day", "duration")
                             }
 
                             R.id.day30radio -> {
-                                utilManager.saveData("30hr", "duration")
+                                utilManager.saveData("30day", "duration")
                             }
                         }
                     }
@@ -145,6 +133,30 @@ class MainActivity : AppCompatActivity() {
 
                         if (utilManager.getData("duration") != null && utilManager.getData("duration") != "") {
                             utilManager.saveData("contacts", "saved")
+                            val duration = utilManager.getData("duration")
+                            when(duration){
+                                "1hr" ->{
+                                    startCountdown(Calendar.HOUR_OF_DAY,1)
+                                }
+                                "3hr" ->{
+                                    startCountdown(Calendar.HOUR_OF_DAY,3)
+                                }
+                                "6hr" ->{
+                                    startCountdown(Calendar.HOUR_OF_DAY,6)
+                                }
+                                "24hr" ->{
+                                    startCountdown(Calendar.HOUR_OF_DAY,24)
+                                }
+                                "3day" ->{
+                                    startCountdown(Calendar.DAY_OF_MONTH,3)
+                                }
+                                "7day" ->{
+                                    startCountdown(Calendar.DAY_OF_MONTH,7)
+                                }
+                                "30day" ->{
+                                    startCountdown(Calendar.DAY_OF_MONTH,30)
+                                }
+                            }
                             contactRad.isChecked = true
                             alertDialogTwo.dismiss()
                         }
@@ -155,123 +167,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        checkOverlayPermission(this)
-//        phoneNumber = intent.getStringExtra("number").toString()
-//        numText = findViewById(R.id.numText)
-//        if (intent != null && intent.hasExtra("number")) {
-//            val incomingNumber = intent.getStringExtra("number")
-//            numText.text = incomingNumber
-//        }
-        registerReceiver(finishReceiver, IntentFilter("com.example.FINISH_ACTIVITY"))
         checkAndRequestPermissions(this)
-
-//
-//        if(!checkAndRequestPermissions(this)){
-//            Toast.makeText(this, "Kindly give full permissions, closing...", Toast.LENGTH_SHORT).show()
-//            val background: Thread = object : Thread() {
-//                override fun run() {
-//                    try {
-//                        sleep((2 * 1000).toLong())
-//                        finish()
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//            background.start()
-//        }
     }
-//
-//    private fun arePermissionsGranted(context: Context, permissions: Array<String>): Boolean {
-//        for (permission in permissions) {
-//            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-//                // Return false if any of the permissions is not granted
-//                return false
-//            }
-//        }
-//        // All permissions are granted
-//        return true
-//    }
 
-//    private fun checkAndRequestPermissions(activity: Activity) : Boolean {
-//        val permissionsToRequest = mutableListOf<String>()
-//
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.READ_CALL_LOG
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            permissionsToRequest.add(android.Manifest.permission.READ_CALL_LOG)
-//        }
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.READ_CONTACTS
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            permissionsToRequest.add(android.Manifest.permission.READ_CONTACTS)
-//        }
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.READ_PHONE_STATE
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            permissionsToRequest.add(android.Manifest.permission.READ_PHONE_STATE)
-//        }
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.ANSWER_PHONE_CALLS
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                permissionsToRequest.add(android.Manifest.permission.ANSWER_PHONE_CALLS)
-//            }
-//        }
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.READ_SMS
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            permissionsToRequest.add(android.Manifest.permission.READ_SMS)
-//        }
-//        if (ContextCompat.checkSelfPermission(
-//                activity,
-//                android.Manifest.permission.SEND_SMS
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            permissionsToRequest.add(android.Manifest.permission.SEND_SMS)
-//        }
-//
-//        if (permissionsToRequest.isNotEmpty()) {
-//            ActivityCompat.requestPermissions(
-//                activity,
-//                permissionsToRequest.toTypedArray(),
-//                PERMISSION_REQUEST_CODE
-//            )
-//        }
-//        return arePermissionsGranted(this, permissions)
-//    }
-//
-//    private fun checkOverlayPermission(context: Context) {
-//        if (!Settings.canDrawOverlays(context)) {
-//            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-//            intent.data = Uri.parse("package:${context.packageName}")
-//            try {
-//                context.startActivity(intent)
-//            } catch (e: Exception) {
-//                Toast.makeText(context, "Failed to open app settings", Toast.LENGTH_SHORT).show()
-//                e.printStackTrace()
-//            }
-//        }
-//    }
 
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        // Check if the activity was brought back to the foreground with a new intent containing the number
-//        if (intent != null && intent.hasExtra("number")) {
-//            val incomingNumber = intent.getStringExtra("number")
-//            numText.text = incomingNumber
-//        }
-//    }
+    private fun startCountdown(time:Int,duration:Int) {
+        val targetTime = Calendar.getInstance().apply {
+            add(time, duration)
+        }.timeInMillis
+        countDownTimer = object : CountDownTimer(targetTime - System.currentTimeMillis(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                // Update remaining time in UI
+                val remainingSeconds = millisUntilFinished / 1000
+                val hours = remainingSeconds / 3600
+                val minutes = (remainingSeconds % 3600) / 60
+                val seconds = remainingSeconds % 60
+            }
+
+            override fun onFinish() {
+                utilManager.saveData("","duration")
+                utilManager.saveData("accept","saved")
+            }
+        }.start()
+    }
 
     private fun checkAndRequestPermissions(activity: Activity) {
         val permissionsToRequest = mutableListOf<String>()
@@ -340,11 +258,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    //    override fun onDestroy() {
-//        super.onDestroy()
-//        numText.text = ""
-//    }
     companion object {
         private const val PERMISSION_REQUEST_CODE = 1001
     }
