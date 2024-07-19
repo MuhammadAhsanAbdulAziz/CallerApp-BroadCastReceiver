@@ -1,6 +1,7 @@
 package com.example.incomingcalldetectionwithbroadcastreceiver
 
 import android.Manifest
+import android.app.admin.DevicePolicyManager
 import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
@@ -16,16 +17,19 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 
 
 open class BroadcastReceiver : BroadcastReceiver() {
 
     private lateinit var context: Context
     private lateinit var utilManager: UtilManager
+    private lateinit var deviceManger : DevicePolicyManager
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null) {
             this.context = context
             utilManager = UtilManager(context)
+            deviceManger = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         }
         if (context != null && intent != null) {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
@@ -48,6 +52,7 @@ open class BroadcastReceiver : BroadcastReceiver() {
                                             acceptCall(telecomManager)
                                             val finishIntent = Intent("com.example.FINISH_ACTIVITY")
                                             context.sendBroadcast(finishIntent)
+                                            deviceManger.lockNow()
                                         } catch (e: Exception) {
                                             Toast.makeText(context, e.message, Toast.LENGTH_LONG)
                                                 .show()

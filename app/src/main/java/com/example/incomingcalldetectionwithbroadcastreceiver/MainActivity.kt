@@ -227,6 +227,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+
         if (permissionsToRequest.isNotEmpty()) {
             ActivityCompat.requestPermissions(
                 activity, permissionsToRequest.toTypedArray(), PERMISSION_REQUEST_CODE
